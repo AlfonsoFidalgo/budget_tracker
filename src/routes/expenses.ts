@@ -44,6 +44,9 @@ expensesRouter.param(
   "expenseId",
   (req: ExpenseRequest, res: Response, next: NextFunction, id: string) => {
     const expenseId = Number(id);
+    if (!expenseId) {
+      res.status(400).send("Invalid expenseId");
+    }
     const expenseIndex = Expenses.findIndex(
       (expense) => expense.id === expenseId
     );
@@ -59,6 +62,13 @@ expensesRouter.param(
 
 expensesRouter.get("/", (req: Request, res: Response) => {
   res.status(202).send(Expenses);
+});
+
+expensesRouter.get("/:expenseId", (req: ExpenseRequest, res: Response) => {
+  const filteresExpenses = Expenses.filter(
+    (expense) => expense.id === Number(req.expenseId)
+  );
+  res.status(200).send(filteresExpenses);
 });
 
 expensesRouter.post(
