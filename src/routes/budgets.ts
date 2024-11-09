@@ -27,4 +27,33 @@ budgetsRouter.post("/", (req: Request, res: Response) => {
   res.status(201).send(newBudget);
 });
 
+budgetsRouter.delete("/:budgetId", (req: Request, res: Response) => {
+  const idx = Budgets.findIndex(
+    (budget) => budget.id === Number(req.params.budgetId)
+  );
+  if (idx !== -1) {
+    const budget = Budgets.splice(idx, 1);
+    res.send(budget);
+  } else {
+    res.status(404).send("Budget not found");
+  }
+});
+
+budgetsRouter.put("/:budgetId", (req: Request, res: Response) => {
+  const idx = Budgets.findIndex(
+    (budget) => budget.id === Number(req.params.budgetId)
+  );
+  if (idx !== -1) {
+    Budgets[idx] = {
+      id: Budgets[idx].id,
+      name: req.body.name,
+      budget: req.body.budget,
+      description: req.body.description,
+    };
+    res.send(Budgets[idx]);
+  } else {
+    res.status(404).send("Budget not found");
+  }
+});
+
 export default budgetsRouter;
