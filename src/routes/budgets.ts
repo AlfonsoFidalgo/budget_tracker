@@ -4,6 +4,11 @@ import { Budgets } from "../data";
 const budgetsRouter: Router = express.Router();
 
 interface BudgetRequest extends Request {
+  newBudget?: {
+    name: string;
+    budget: number;
+    description: string;
+  };
   budgetId?: string;
   budgetIndex?: number;
 }
@@ -27,8 +32,22 @@ budgetsRouter.param(
   }
 );
 
+const validateBudget = (
+  req: BudgetRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { name, budget, description } = req.body;
+  if (typeof budget !== "number" || !name || !description) {
+    res.status(400).send("Bad input type.");
+    return;
+  }
+  req.newBudget = { name, budget, description };
+  next();
+};
+
 budgetsRouter.get("/", (req: Request, res: Response) => {
-  res.status(202).send(Budgets);
+  res.status(200).send(Budgets);
 });
 
 budgetsRouter.get("/:budgetId", (req: BudgetRequest, res: Response) => {
@@ -41,10 +60,13 @@ budgetsRouter.get("/total", (req: Request, res: Response) => {
   res.send({ total });
 });
 
-budgetsRouter.post("/", (req: Request, res: Response) => {
-  const { name, budget, description } = req.body;
+budgetsRouter.post("/", validateBudget, (req: BudgetRequest, res: Response) => {
+  if (!req.newBudget) {
+    res.status(400).send();
+    return;
+  }
   const id = Budgets.length + 1;
-  const newBudget = { id, name, budget, description };
+  const newBudget = { ...req.newBudget, id };
   Budgets.push(newBudget);
   res.status(201).send(newBudget);
 });
@@ -68,7 +90,7 @@ budgetsRouter.put("/:budgetId", (req: BudgetRequest, res: Response) => {
     };
     res.send(Budgets[req.budgetIndex]);
   } else {
-    res.status(404).send("Budget not found");
+    res.status(400).send("Budget not found");
   }
 });
 

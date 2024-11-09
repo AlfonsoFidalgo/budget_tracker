@@ -62,7 +62,7 @@ expensesRouter.param(
 );
 
 expensesRouter.get("/", (req: Request, res: Response) => {
-  res.status(202).send(Expenses);
+  res.status(200).send(Expenses);
 });
 
 expensesRouter.get("/:expenseId", (req: ExpenseRequest, res: Response) => {
