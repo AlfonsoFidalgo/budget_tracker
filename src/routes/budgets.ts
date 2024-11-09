@@ -8,7 +8,7 @@ budgetsRouter.get("/", (req: Request, res: Response) => {
 });
 
 budgetsRouter.get("/:budgetId", (req: Request, res: Response) => {
-  const budget = Budgets.filter(
+  const budget = Budgets.find(
     (budget) => budget.id === Number(req.params.budgetId)
   );
   res.send(budget);
