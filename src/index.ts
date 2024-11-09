@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import bodyParser from "body-parser";
 import budgetsRouter from "./routes/budgets";
 import expensesRouter from "./routes/expenses";

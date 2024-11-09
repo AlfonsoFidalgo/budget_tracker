@@ -46,6 +46,7 @@ expensesRouter.param(
     const expenseId = Number(id);
     if (!expenseId) {
       res.status(400).send("Invalid expenseId");
+      return;
     }
     const expenseIndex = Expenses.findIndex(
       (expense) => expense.id === expenseId
