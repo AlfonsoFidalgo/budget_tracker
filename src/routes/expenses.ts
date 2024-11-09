@@ -28,6 +28,14 @@ const validateExpense = (
     res.status(400).send("Inexisting budget");
     return;
   }
+  //Check total budget and total expenses of that budget
+  const budgetAmount = budget.budget;
+  const expenses = Expenses.filter((expense) => expense.id === budgetId);
+  const totalCost = expenses.reduce((a, b) => a + b.cost, 0);
+  if (totalCost + cost > budgetAmount) {
+    res.status(403).send("Budget depleted, can't add more expenses");
+    return;
+  }
   req.newExpense = { name, cost, budgetId };
   next();
 };
